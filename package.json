@@ -4,7 +4,8 @@
   "description": "JavaScript Conditional Compilation Macro.",
   "main": "bin/main.js",
   "scripts": {
-    "build": "babel src -d lib",
+    "clean": "rm lib -rf",
+    "build": "npm run clean && babel src -d lib",
     "test": "npm run build && istanbul cover node_modules/.bin/mocha"
   },
   "bin": {

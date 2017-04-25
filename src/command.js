@@ -1,4 +1,5 @@
 import commander from 'commander';
+import macroCC from 'main';
 
 commander
   .version('0.0.1')
