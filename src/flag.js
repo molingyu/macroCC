@@ -1,5 +1,4 @@
-let flag = { flags : new Map() };
-flag.set = flag.flags.set.bind(flag.flags);
+let flag = new Map();
 
 flag.set('$proc', 233);
 

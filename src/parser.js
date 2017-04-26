@@ -1,4 +1,4 @@
-import Tokenizer from 'tokenizer';
+import Tokenizer from './tokenizer';
 
 class Parser {
   constructor() {
@@ -9,3 +9,5 @@ class Parser {
   }
 
 }
+
+export default Parser;

@@ -3,6 +3,7 @@ export default class Tokenizer {
     this.code = str;
     this.index = 0;
     this.chr = this.code[this.index];
+    this.tokens = [];
   }
 
   next() {
