@@ -1,5 +1,5 @@
-import error from './error'
-import Scopes from './scopes'
+import error from './error';
+import Scopes from './scopes';
 
 class Compiler {
   constructor(ast, flag) {
