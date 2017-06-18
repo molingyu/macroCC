@@ -58,16 +58,16 @@ console.log(0)
 //   }
 // ];
 
-// describe('parser', function () {
-//   describe('#parse', function () {
-//     it('should return -1 when the value is not present', function () {
-//       expect(Parser.parse(script)).to.be.equal(CCScript);
-//     });
-//   });
-// });
+describe('parser', function () {
+  describe('#parse', function () {
+    it('should return -1 when the value is not present', function () {
+      expect(Parser.parse(script)).to.be.equal(CCScript);
+    });
+  });
+});
 
 
-parser = new Parser();
-let ast = parser.parse(script);
+// parser = new Parser();
+// var ast = parser.parse(script);
 // console.log(ast)
 // console.log(ast[ast.length -1])
