@@ -70,7 +70,7 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return this.flag.get(node.identifier)
+    return this.flag.get(node.identifier);
   }
 
   identifier(node) {
@@ -96,13 +96,14 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return node.value
+    return node.value;
   }
 
   globalVariableDeclaration(node) {
     /**
      * {
      *    type: 'globalVariableDeclaration',
+     *    
      *    identifier: @globalIdentifier
      *    value: @flag | @globalIdentifier | @identifier | @value | @unaryExpression | @binaryExpression | @conditionalExpression
      *    pos: @posObject

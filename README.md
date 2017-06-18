@@ -24,4 +24,4 @@ console.log('hello macroCC!')
 
 # License
 
-[MIT](https://mit-license.org/)
+[MIT](/LICENSE)
