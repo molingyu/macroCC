@@ -9,7 +9,7 @@ before_script:
   - npm run build
 
 script:
-  - npm test:coverage
+  - npm run test:coverage
 
 after_success:
   - npm install codecov

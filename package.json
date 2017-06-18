@@ -17,8 +17,12 @@
     "macro",
     "conditional compilation"
   ],
-  "author": "shitake",
+  "author": "shitake <z1522716486@hotmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/molingyu/macroCC.git"
+  },
   "dependencies": {
     "commander": "^2.9.0"
   },
