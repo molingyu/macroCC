@@ -69,5 +69,5 @@ console.log(0)
 
 parser = new Parser();
 let ast = parser.parse(script);
-console.log(ast)
-console.log(ast[ast.length -1])
+// console.log(ast)
+// console.log(ast[ast.length -1])

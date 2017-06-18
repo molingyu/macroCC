@@ -1,4 +1,6 @@
 # MacroCC
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmolingyu%2FmacroCC.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmolingyu%2FmacroCC?ref=badge_large)
+
 
 A useful javascript Conditional Compilation macro.
 
