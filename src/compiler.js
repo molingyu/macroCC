@@ -3,8 +3,8 @@ import Scopes from './scopes';
 
 class Compiler {
   constructor(ast, flag) {
-    this.ast = ast;
-    this.flag = flag;
+    this._ast = ast;
+    this._flag = flag;
     this.rootScopes = new Scopes();
     this.scopes = this.rootScopes;
   }
@@ -59,7 +59,7 @@ class Compiler {
   }
 
   cc() {
-    return this.eachEval(this.ast);
+    return this.eachEval(this._ast);
   }
 
   flag(node) {
@@ -70,7 +70,7 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return this.flag.get(node.identifier);
+    return this._flag.get(node.identifier);
   }
 
   identifier(node) {
@@ -103,13 +103,12 @@ class Compiler {
     /**
      * {
      *    type: 'globalVariableDeclaration',
-     *    
      *    identifier: @globalIdentifier
      *    value: @flag | @globalIdentifier | @identifier | @value | @unaryExpression | @binaryExpression | @conditionalExpression
      *    pos: @posObject
      * }
      */
-    if (!this.rootScopes.add(node.identifier, this.eval(node.value))) {
+    if (this.rootScopes.add(node.identifier, this.eval(node.value)) === false) {
       error(SyntaxError, `Identifier '${node.identifier}' has already been declared`, node.pos);
     }
     return '';

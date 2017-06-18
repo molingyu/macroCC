@@ -1,13 +1,13 @@
-var expect = require('chai').expect;
-var Parser = require('../lib/parser').default;
+// var expect = require('chai').expect;
+// var Parser = require('../lib/parser').default;
 
-var script = `//#define a = 233
-var a = /*# a #*/ / 2
-//#if a > 100
-console.log(100)
-//#else
-console.log(0)
-//#endif`;
+// var script = `//#define a = 233
+// var a = /*# a #*/ / 2
+// //#if a > 100
+// console.log(100)
+// //#else
+// console.log(0)
+// //#endif`;
 
 // var CCScript = [
 //   {
@@ -58,16 +58,10 @@ console.log(0)
 //   }
 // ];
 
-describe('parser', function () {
-  describe('#parse', function () {
-    it('should return -1 when the value is not present', function () {
-      expect(Parser.parse(script)).to.be.equal(CCScript);
-    });
-  });
-});
-
-
-// parser = new Parser();
-// var ast = parser.parse(script);
-// console.log(ast)
-// console.log(ast[ast.length -1])
+// describe('parser', function () {
+//   describe('#parse', function () {
+//     it('should return -1 when the value is not present', function () {
+//       expect(new Parser().parse(script)).to.be.equal(CCScript);
+//     });
+//   });
+// });

@@ -41,6 +41,7 @@ class Scopes {
         scopes = scopes.parent;
       }
     }
+    return false;
   }
 }
 
