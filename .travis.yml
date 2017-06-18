@@ -11,6 +11,3 @@ before_script:
 script:
   - npm run test:coverage
 
-after_success:
-  - npm install codecov
-  - ./node_modules/.bin/codecov
