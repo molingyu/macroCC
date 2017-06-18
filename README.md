@@ -1,6 +1,8 @@
 # MacroCC
 [![Build Status](https://travis-ci.org/molingyu/macroCC.svg?branch=master)](https://travis-ci.org/molingyu/macroCC)
+[![Coverage Status](https://img.shields.io/coveralls/gotwarlost/macroCC.svg)](https://coveralls.io/r/gotwarlost/macroCC?branch=master)
 
+[![NPM](https://nodei.co/npm/macro-cc.png?downloads=true)](https://nodei.co/npm/macro-cc/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmolingyu%2FmacroCC.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmolingyu%2FmacroCC?ref=badge_large)
 
 
