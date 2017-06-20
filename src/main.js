@@ -1,13 +1,11 @@
 import flag from './flag';
-import Tokenizer from './tokenizer';
 import Parser from './parser';
 import Scopes from './scopes';
 import Compiler from './compiler';
 
-function macroCC(str) {
+function macroCC(str, flags = flag()) {
   let ast = new Parser().parse(str);
-  return new Compiler(ast, flag).cc();
+  return new Compiler(ast, flags).cc();
 }
 
-export default macroCC;
-export {flag, Tokenizer, Parser, Compiler};
+export { macroCC, flag, Parser, Compiler};

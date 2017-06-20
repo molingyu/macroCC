@@ -1,8 +1,9 @@
 import commander from 'commander';
-import macroCC from 'main';
+import { macroCC } from './main';
+import conf from '../package.json'
 
 commander
-  .version('0.0.1')
+  .version(conf.version)
   .command('rmdir <dir> [otherDirs...]')
   .action(function (dir, otherDirs) {
     console.log('rmdir %s', dir);
