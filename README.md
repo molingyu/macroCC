@@ -1,4 +1,6 @@
 # MacroCC
+
+[![Join the chat at https://gitter.im/macro-cc/Lobby](https://badges.gitter.im/macro-cc/Lobby.svg)](https://gitter.im/macro-cc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/molingyu/macroCC.svg?branch=master)](https://travis-ci.org/molingyu/macroCC)
 [![Coverage Status](https://coveralls.io/repos/github/molingyu/macroCC/badge.svg?branch=master)](https://coveralls.io/github/molingyu/macroCC?branch=master)
 [![npm version](https://badge.fury.io/js/macro-cc.svg)](https://badge.fury.io/js/macro-cc)
