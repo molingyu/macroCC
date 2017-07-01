@@ -1,11 +1,12 @@
-import flag from './flag';
-import Parser from './parser';
-import Scopes from './scopes';
-import Compiler from './compiler';
+import flag from './flag'
+import Parser from './parser'
+import Scopes from './scopes'
+import Compiler from './compiler'
+import error from './error'
 
 function macroCC(str, flags = flag()) {
-  let ast = new Parser().parse(str);
-  return new Compiler(ast, flags).cc();
+  let ast = new Parser().parse(str)
+  return new Compiler(ast, flags).cc()
 }
 
 export { macroCC, flag, Parser, Compiler};

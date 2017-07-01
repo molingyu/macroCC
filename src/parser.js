@@ -1,119 +1,161 @@
-import MacroCCError from './error';
+// import error from './error';
+function error(type, msg, pos) {
+  throw new type(`${msg}(${pos.file}:${pos.line}:${pos.index})`, pos)
+}
 
 class Parser {
   constructor() {
-    this.ast = [];
-    this.pos = { line: 1, index: 0 };
-    this.deep = 0;
-    this.nodeList = [];
-    this.codeStr = '';
-    this.index = 0;
+    this.nodeStack = []
+    this.lineCode = ''
+    this.index = 0
+    this.list = []
   }
 
-  parse(codeStr) {
-    let codes = codeStr.split('\n');
-    let start = { line: this.pos.line, index: this.pos.index };
-    let script = '';
-    codes.forEach(function (line) {
-      this.node = this.nodeList[this.nodeList.length - 1];
-      if (this.node) {
-        this.list = this.node.else ? this.node.ifConsequent : this.node.ifAlternate;
-      } else {
-        this.list = this.ast;
-      }
+  parse(codeStr, file = '') {
+    $script = codeStr
+    let ast = {
+      type: 'root',
+      child: []
+    }
+    let codes = codeStr.split('\n')
+    let script = ''
+    let start = {
+      file: file,
+      lines: 1,
+      cols: 0
+    }
+    this.node = this.nodeStack[this.nodeStack.length - 1]
+    codes.forEach((line, index) => {
+      // only code
       if (line.slice(0, 3) == '//#') {
         if (script != '') {
-          console.log(start)
-          this.list.push({ type: 'script', value: script, pos: start });
-          start = { line: this.pos.line, index: this.pos.index };
-          script = '';
+          list.push({ type: 'script', value: script, pos: Object.assign({}, start) })
+          script = ''
         }
-        console.log(start)
-        this.code(line.slice(3, line.length), start);
+        start.lines = index + 1
+        start.cols = 3
+        //error!!!
+        let node = this.code(line.slice(3, line.length), Object.assign({}, start))
+        if (node != void 0) this.list.push(node)
+        start.lines += 1
+        start.cols = 0
       } else {
-        let reg = line.match(/\/\*#(.*)#\*\//);
-        if (reg) {
-          script += line.slice(0, reg.index);
-          this.list.push({ type: 'script', value: script, pos: start });
-          start = { line: this.pos.line, index: this.pos.index };
-          script = '';
-          this.code(reg[1], start);
-          start.index += reg.index + reg[0].length;
-          let antherLine = line.slice(reg.index + reg[0].length, line.length);
-          if (antherLine != '') {
-            script += antherLine + '\n';
-          }
-        } else {
-          script += line + '\n';
+        let reg
+        while (reg = line.match(/\/\*#(.*?)#\*\//)) {
+          script += line.slice(0, reg.index)
+          this.list.push({ type: 'script', value: script, pos: Object.assign({}, start) })
+          script = ''
+          start.lines = index + 1
+          start.cols += reg.index + 3
+          let node = this.code(reg[1], Object.assign({}, start))
+          if (node != void 0) this.list.push(node)
+          start.cols += reg[0].length - 3
+          line = line.slice(reg.index + reg[0].length, line.length)
         }
+        script += line + '\n';
       }
-      this.pos.line += 1;
-      this.pos.index = 0;
-    }, this);
+    })
     return this.ast;
   }
 
-  expression() {
-    return 'expression 233'
+  reList() {
+    this.node = this.nodeStack[this.nodeStack.length - 1]
+    if (this.node) {
+      ist = this.node.isConsequent ? this.node.ifConsequent : this.node.ifAlternate
+    } else {
+      this.list = this.ast
+    }
+  }
+
+  expression(start) {
+    this.ws()
+    let chr = this.chr()
+    let node
+    if (chr != void 0) {
+      //   if (chr.match(/[0-9]/)) {
+      //     this.clear()
+      //     node = {
+      //       type: 'value',
+      //       value: this.number(),
+      //       pos: Object.assign({}, start)
+      //     }
+      //     return node
+      //   } else if (chr.match(/[A-Z]/)) {
+      //     return {
+      //       type: 'flag',
+      //       identifier: this.name(start),
+      //       pos: Object.assign({}, start)
+      //     }
+      //   } else if (chr == '$') {
+      //     return {
+      //       type: 'identifier',
+      //       global: true,
+      //       identifier: this.name(start),
+      //       pos: Object.assign({}, start)
+      //     }
+      //   } else if (chr.match(/[_a-z]/)) {
+      //     return {
+      //       type: 'identifier',
+      //       global: false,
+      //       identifier: this.name(start),
+      //       pos: Object.assign({}, start)
+      //     }
+      //   }
+      return 'expression 233'
+    }
   }
 
   code(codeStr, start) {
-    this.codeStr = codeStr;
-    this.ws();
-    console.log(this.codeStr)
+    this.lineCode = codeStr
+    this.ws()
     if (this.nextIs('define')) {
-      this.ws();
-      let node = { pos: start };
-      if (this.chr() == '$')
-        node.type = this.nextIs('$') ? 'globalVariableDeclaration' : 'variableDeclaration';
-      node.identifier = this.name();
-      node.value = this.expression();
-      this.list.push(node);
-      this.clear();
+      this.ws()
+      let node = {
+        type: this.nextIs('$') ? 'globalVariableDeclaration' : 'variableDeclaration',
+        identifier: this.name()
+      }
+      this.ws()
+      if (!this.nextIs('=')) {
+        start.cols += this.index
+        error(SyntaxError, `Unexpected token "${this.chr()}"`, start)
+      }
+      this.ws()
+      node.value = this.expression(start)
+      node.pos = Object.assign({}, start)
+      this.clear()
+      return node
     } else if (this.nextIs('if')) {
-      this.deep += 1;
-      this.ws();
+      this.ws()
       let node = {
         type: 'ifStatement',
         ifConsequent: [],
         ifAlternate: [],
-        pos: start,
-        deep: this.deep,
-        else: true
-      };
-      node.ifTest = this.expression();
-      this.nodeList.push(node);
-      this.clear();
+        pos: Object.assign({}, start),
+        isConsequent: true
+      }
+      node.ifTest = this.expression()
+      this.nodeStack.push(node)
+      // this.node = this.nodeStack[this.nodeStack.length - 1]
+      this.clear()
+      return node
     } else if (this.nextIs('else')) {
-      console.log(this.nodeList)
-      if (this.node.deep != this.deep) {
-        error()
-      }
-      this.node.else = false;
-      this.clear();
+      this.node.isConsequent = false
+      this.clear()
     } else if (this.nextIs('endif')) {
-      delete this.node.deep;
-      delete this.node.else;
-      let node = this.node;
-      this.nodeList.pop();
-      this.node = this.nodeList[this.nodeList.length - 1];
-      if (this.node) {
-        this.list = this.node.else ? this.node.ifConsequent : this.node.ifAlternate;
-      } else {
-        this.list = this.ast;
-      }
-      this.list.push(node);
-      this.deep -= 1;
-      this.clear();
+      delete this.node.isConsequent
+      let node = this.nodeStack.pop()
+      this.clear()
+      return node
     } else {
-      this.ast.push({ type: 'code', value: codeStr, pos: start })
-      this.clear();
+      // return this.expression(start)
+      this.clear()
+      return { type: 'code', value: codeStr, pos: Object.assign({}, start) }
     }
   }
 
   number() {
     let number = ''
-    while (this.chr().match(/[0-9\.]/)) {
+    while (this.chr() != void 0 && this.chr().match(/[0-9\.]/)) {
       number += this.chr();
       this.index += 1;
     }
@@ -135,48 +177,59 @@ class Parser {
 
   flag() {
     let flag = '';
-    while(this.chr().match(/[A-Z_]/) == this.chr()) {
+    while (this.chr().match(/[A-Z_]/) == this.chr()) {
       flag += this.chr();
       this.index += 1;
     }
     return flag;
   }
 
-  name() {
+  name(start) {
     let name = '';
-    let line = this.pos.line;
-    let pos = this.pos.index;
-    if (this.nextIs('$')) {
-      this.chr().match(/[_a-z]/)
+    while (this.chr().match(/[_a-z]/) == this.chr()) {
+      name += this.chr()
+      this.index += 1
     }
+    return name
   }
 
+  // line code function:
+
   clear() {
-    this.codeStr = '';
+    this.lineCode = '';
     this.index = 0;
   }
 
   nextIs(str) {
-    console.log(this.index, this.codeStr.slice(this.index, str.length), str)
-    if (this.codeStr.slice(this.index, str.length) == str) {
-      this.index += str.length;
-      return true;
-    } else {
-      return false;
+    let index = 0
+    for (let i in str) {
+      if (str[i] != this.chr()) return false
+      this.index += 1
     }
-
+    return true
   }
 
   chr() {
-    return this.codeStr[this.index];
+    return this.lineCode[this.index];
   }
 
   ws() {
     while (this.chr() == ' ') {
       this.index += 1;
-      if (this.chr() == void 0) break;
     }
   }
 }
 
-export default Parser;
+// export default Parser;
+
+var script = `//#define a = 233
+var a = /*# a #*/ / /*# 233 #*/ + 1
+//#if a > 100
+console.log(100)
+//#else
+console.log(0)
+//#endif`;
+
+let parser = new Parser()
+let ast = parser.parse(script, 'main.js')
+console.log(ast)

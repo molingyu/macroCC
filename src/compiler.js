@@ -59,7 +59,7 @@ class Compiler {
   }
 
   cc() {
-    return this.eachEval(this._ast);
+    return this.eachEval(this._ast.child);
   }
 
   flag(node) {
@@ -85,6 +85,7 @@ class Compiler {
     if (!this.scopes.allHas(node.identifier)) {
       error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos);
     }
+    //error global?
     return this.scopes.get(node.identifier);
   }
 
