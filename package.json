@@ -7,7 +7,7 @@
     "clean": "rm lib -rf",
     "build": "npm run clean && babel src -d lib",
     "test:coverage": "babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "test": "npm run build & node_modules/.bin/mocha"
+    "test": "npm run build && node_modules/.bin/mocha"
   },
   "bin": {
     "macroCC": "./bin/macroCC"
