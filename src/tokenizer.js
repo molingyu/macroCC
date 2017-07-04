@@ -2,7 +2,7 @@ import error from './error'
 
 class Tokenizer {
 
-  constructor(pos, code) {
+  constructor(code, pos) {
     this.code = code
     this.index = 0
     this.pos = pos
@@ -27,12 +27,20 @@ class Tokenizer {
       '!==',
       '='      
     ]
+    this.keyword = [
+      'define',
+      'if',
+      'else',
+      'endif'
+    ]
   }
 
   run() {
     let tokens = []
+    this.ws()
     while (this.chr() != void 0) {
-      tokens.push(this.exp(), this.chr())
+      tokens.push(this.expression())
+      this.ws()
     }
     return tokens
   }
@@ -70,7 +78,6 @@ class Tokenizer {
   }
 
   expression() {
-    this.ws()
     let chr = this.chr()
     if (chr.match(/[A-Z]/)) {
       return {
@@ -78,54 +85,58 @@ class Tokenizer {
         pos: this.index,
         value: this.flag()
       }
-    }
-    if (chr = '$') {
+    } else if (chr == '$') {
       return {
         type: 'globalIdentifier',
         pos: this.index,
         value: this.globalIdentifier()
       }
-    }
-    if (chr.match(/[a-z_]/)) {
+    } else if (chr.match(/[a-z_]/)) {
+      let type
       let pos = this.index
       let value = this.identifier()
-      if (value.match(/true||false||null||undefined/)) {
-        value = eval(value)
+      if (this.keyword.includes(value)) {
         type = 'keyword'
+      } else if (value.match(/true||false||null||undefined/) == value) {
+        type = 'value'
+        value = eval(value)
       } else {
         type = 'identifier'
       }
       return { type: type, pos: pos, value: value }
-    }
-    if (chr.match(/['"]/)) {
+    } else if (chr.match(/['"]/)) {
       return {
-        type: 'string',
+        type: 'value',
         pos: this.index,
         value: this.string()
       }
-    }
-    if(this.arithmetics.includes(this.chr)) {
+    } else if (chr.match(/[0-9]/)) {
+      return {
+        type: 'value',
+        pos: this.index,
+        value: this.number()
+      }
+    } else if(this.arithmetics.includes(chr)) {
       return {
         type: 'arithmetic',
         pos: this.index,
         value: this.arithmetic()
       }
-    }
-    if(this.skip('typeof')){
+    } else if(this.skip('typeof')){
       return {
         type: 'arithmetic',
         pos: this.index,
         value: 'typeof'
       }
-    }
-    if(this.skip('void')){
+    } else if(this.skip('void')){
       return {
         type: 'arithmetic',
         pos: this.index,
         value: 'void'
       }
+    } else {
+      error(SyntaxError, `Invalid or unexpected token '${chr}'`, this.getPos())
     }
-    error(SyntaxError, 'Invalid or unexpected token', this.getPos())
   }
 
   number() {
@@ -191,8 +202,9 @@ class Tokenizer {
 
   identifier() {
     let identifier = ''
-    while(this.chr().match(/[_a-z0-9]/)) {
+    while (this.chr() != void 0 && this.chr().match(/[_a-z0-9]/)) {
       identifier += this.chr()
+      this.next()
     }
     return identifier
   }
@@ -200,8 +212,9 @@ class Tokenizer {
   globalIdentifier() {
     let globalIdentifier = '$'
     this.next()
-    while(this.chr().match(/[_a-z0-9]/)) {
+    while (this.chr() != void 0 && this.chr().match(/[_a-z0-9]/)) {
       globalIdentifier += this.chr()
+      this.next()
     }
     return globalIdentifier
   }
@@ -210,6 +223,7 @@ class Tokenizer {
     let flag = ''
     while(this.chr().match(/[_A-Z0-9]/)) {
       flag += this.chr()
+      this.next()
     }
     return flag
   }

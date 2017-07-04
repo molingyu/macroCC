@@ -7,8 +7,11 @@ var a = /*# a #*/ / 2
 console.log(100)
 //#else
 console.log(0)
-//#endif`;
+//#endif`
+$macroCCScript = script
+parser = new Parser()
 
+console.log(parser.parse(script, 'test.js').child)
 // var CCScript = [
 //   {
 //     type: 'variableDeclaration',
