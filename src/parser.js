@@ -66,7 +66,6 @@ class Parser {
   }
 
   code(codeStr, start) {
-    console.log(codeStr)
     let tokens = new Tokenizer(codeStr, start).run()
     let nodeStack = []
     let node
