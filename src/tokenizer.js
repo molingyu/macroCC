@@ -55,7 +55,7 @@ class Tokenizer {
 
   ws() {
     while (this.chr() == ' ') {
-      this.index += 1;
+      this.index += 1
     }
   }
 
@@ -116,19 +116,19 @@ class Tokenizer {
         pos: this.index,
         value: this.number()
       }
-    } else if(this.arithmetics.includes(chr)) {
+    } else if (this.arithmetics.includes(chr)) {
       return {
         type: 'arithmetic',
         pos: this.index,
         value: this.arithmetic()
       }
-    } else if(this.skip('typeof')){
+    } else if (this.skip('typeof')){
       return {
         type: 'arithmetic',
         pos: this.index,
         value: 'typeof'
       }
-    } else if(this.skip('void')){
+    } else if (this.skip('void')){
       return {
         type: 'arithmetic',
         pos: this.index,
@@ -174,7 +174,7 @@ class Tokenizer {
       }
     }
     number = Number(number)
-    if(isNaN(number)) {
+    if (isNaN(number)) {
       error(SyntaxError, 'Bad number', this.getPos())
     } else {
       return number
@@ -187,7 +187,7 @@ class Tokenizer {
     let lastIs = false
     this.next()
     while (true) {
-      if(this.chr() == void 0) error(SyntaxError, 'Invalid or unexpected token', this.getPos())
+      if (this.chr() == void 0) error(SyntaxError, 'Invalid or unexpected token', this.getPos())
       if (this.chr() == '/') {
         lastIs = !lastIs
         if (lastIs && this.nextIs(startStr)) {
@@ -221,7 +221,7 @@ class Tokenizer {
 
   flag() {
     let flag = ''
-    while(this.chr().match(/[_A-Z0-9]/)) {
+    while (this.chr().match(/[_A-Z0-9]/)) {
       flag += this.chr()
       this.next()
     }

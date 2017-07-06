@@ -1,48 +1,48 @@
 class Scopes {
   constructor(parent = null) {
-    this.parent = parent;
-    if (this.parent) this.parent.addChild(this);
-    this.children = [];
-    this.table = new Map();
+    this.parent = parent
+    if (this.parent) this.parent.addChild(this)
+    this.children = []
+    this.table = new Map()
   }
 
   addChild(child) {
-    this.children.push(child);
+    this.children.push(child)
   }
 
   add(key, value) {
-    if (this.has(key)) return false;
-    this.table.set(key, value);
+    if (this.has(key)) return false
+    this.table.set(key, value)
   }
 
   set(key, value) {
-    if (!this.allHas(key)) return false;
-    this.table.set(key, value);
+    if (!this.allHas(key)) return false
+    this.table.set(key, value)
   }
 
   get(key) {
-    let scopes = this;
+    let scopes = this
     while (!scopes.table.has(key)) {
-      scopes = scopes.parent;
+      scopes = scopes.parent
     }
-    return scopes.table.get(key);
+    return scopes.table.get(key)
   }
 
   has(key) {
-    return this.table.has(key);
+    return this.table.has(key)
   }
 
   allHas(key) {
-    let scopes = this;
+    let scopes = this
     while (scopes) {
       if (scopes.has(key)) {
-        return true;
+        return true
       } else {
-        scopes = scopes.parent;
+        scopes = scopes.parent
       }
     }
-    return false;
+    return false
   }
 }
 
-export default Scopes;
+export default Scopes

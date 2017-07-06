@@ -1,65 +1,65 @@
-import error from './error';
-import Scopes from './scopes';
+import error from './error'
+import Scopes from './scopes'
 
 class Compiler {
   constructor(ast, flag) {
-    this._ast = ast;
-    this._flag = flag;
-    this.rootScopes = new Scopes();
-    this.scopes = this.rootScopes;
+    this._ast = ast
+    this._flag = flag
+    this.rootScopes = new Scopes()
+    this.scopes = this.rootScopes
   }
 
   eval(node) {
-    let value;
+    let value
     switch (node.type) {
       case 'flag':
-        value = this.flag(node);
-        break;
+        value = this.flag(node)
+        break
       case 'identifier':
-        value = this.identifier(node);
-        break;
+        value = this.identifier(node)
+        break
       case 'value':
-        value = this.value(node);
-        break;
+        value = this.value(node)
+        break
       case 'globalVariableDeclaration':
-        value = this.globalVariableDeclaration(node);
-        break;
+        value = this.globalVariableDeclaration(node)
+        break
       case 'variableDeclaration':
-        value = this.variableDeclaration(node);
-        break;
+        value = this.variableDeclaration(node)
+        break
       case 'variableUpdate':
-        value = this.variableUpdate(node);
-        break;
+        value = this.variableUpdate(node)
+        break
       case 'ifStatement':
-        value = this.ifStatement(node);
-        break;
+        value = this.ifStatement(node)
+        break
       case 'unaryExpression':
-        value = this.unaryExpression(node);
-        break;
+        value = this.unaryExpression(node)
+        break
       case 'binaryExpression':
-        value = this.binaryExpression(node);
-        break;
+        value = this.binaryExpression(node)
+        break
       case 'conditionalExpression':
-        value = this.conditionalExpression(node);
-        break;
+        value = this.conditionalExpression(node)
+        break
       case 'script':
-        value = this.script(node);
-        break;
+        value = this.script(node)
+        break
       default:
         error(SyntaxError, 'Error AST node type.', node.pos)
-        break;
+        break
     }
     return value
   }
 
   eachEval(nodes) {
-    let value = '';
-    nodes.forEach((node) => { value += this.eval(node) }, nodes);
-    return value;
+    let value = ''
+    nodes.forEach((node) => { value += this.eval(node) }, nodes)
+    return value
   }
 
   cc() {
-    return this.eachEval(this._ast.child);
+    return this.eachEval(this._ast.child)
   }
 
   flag(node) {
@@ -70,7 +70,7 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return this._flag.get(node.identifier);
+    return this._flag.get(node.identifier)
   }
 
   identifier(node) {
@@ -82,9 +82,9 @@ class Compiler {
      * }
      */
     if (!this.scopes.allHas(node.identifier)) {
-      error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos);
+      error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos)
     }
-    return this.scopes.get(node.identifier);
+    return this.scopes.get(node.identifier)
   }
 
   value(node) {
@@ -95,7 +95,7 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return node.value;
+    return node.value
   }
 
   globalVariableDeclaration(node) {
@@ -108,9 +108,9 @@ class Compiler {
      * }
      */
     if (this.rootScopes.add(node.identifier, this.eval(node.value)) === false) {
-      error(SyntaxError, `Identifier '${node.identifier}' has already been declared`, node.pos);
+      error(SyntaxError, `Identifier '${node.identifier}' has already been declared`, node.pos)
     }
-    return '';
+    return ''
   }
 
   variableDeclaration(node) {
@@ -123,9 +123,9 @@ class Compiler {
      * }
      */
     if (this.scopes.add(node.identifier, this.eval(node.value))) {
-      error(SyntaxError, `Identifier '${node.identifier}' has already been declared`, node.pos);
+      error(SyntaxError, `Identifier '${node.identifier}' has already been declared`, node.pos)
     }
-    return '';
+    return ''
   }
 
   variableUpdate(node) {
@@ -137,12 +137,12 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    let scopes = node.global ? this.rootScopes : this.scopes;
+    let scopes = node.global ? this.rootScopes : this.scopes
     if (!scopes.set(node.identifier, this.eval(node.value))) {
-      error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos);
+      error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos)
     }
 
-    return '';
+    return ''
   }
 
   ifStatement(node) {
@@ -155,15 +155,15 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    this.scopes = new Scopes(this.scopes);
-    let value;
+    this.scopes = new Scopes(this.scopes)
+    let value
     if (this.eval(node.ifTest)) {
-      value = this.eachEval(node.ifConsequent);
+      value = this.eachEval(node.ifConsequent)
     } else {
-      value = this.eachEval(node.ifAlternate);
+      value = this.eachEval(node.ifAlternate)
     }
-    this.scopes = this.scopes.parent;
-    return value;
+    this.scopes = this.scopes.parent
+    return value
   }
 
   unaryExpression(node) {
@@ -175,25 +175,25 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    let value;
+    let value
     switch (node.operator) {
       case '!':
-        value = !this.eval(node.value);
-        break;
+        value = !this.eval(node.value)
+        break
       case '~':
-        value = ~this.eval(node.value);
-        break;
+        value = ~this.eval(node.value)
+        break
       case 'typeof':
-        value = typeof this.eval(node.value);
-        break;
+        value = typeof this.eval(node.value)
+        break
       case 'void':
-        value = void this.eval(node.value);
-        break;
+        value = void this.eval(node.value)
+        break
       default:
-        error(SyntaxError, `Operator ${node.operator} is not defined`, node.pos);
-        break;
+        error(SyntaxError, `Operator ${node.operator} is not defined`, node.pos)
+        break
     }
-    return value;
+    return value
   }
 
   binaryExpression(node) {
@@ -206,76 +206,76 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    let value;
+    let value
     switch (node.operator) {
       case '*':
-        value = this.eval(node.left) * this.eval(node.right);
-        break;
+        value = this.eval(node.left) * this.eval(node.right)
+        break
       case '/':
-        value = this.eval(node.left) / this.eval(node.right);
-        break;
+        value = this.eval(node.left) / this.eval(node.right)
+        break
       case '%':
-        value = this.eval(node.left) % this.eval(node.right);
-        break;
+        value = this.eval(node.left) % this.eval(node.right)
+        break
       case '+':
-        value = this.eval(node.left) + this.eval(node.right);
-        break;
+        value = this.eval(node.left) + this.eval(node.right)
+        break
       case '-':
-        value = this.eval(node.left) - this.eval(node.right);
-        break;
+        value = this.eval(node.left) - this.eval(node.right)
+        break
       case '<<':
-        value = this.eval(node.left) << this.eval(node.right);
-        break;
+        value = this.eval(node.left) << this.eval(node.right)
+        break
       case '>>':
-        value = this.eval(node.left) >> this.eval(node.right);
-        break;
+        value = this.eval(node.left) >> this.eval(node.right)
+        break
       case '>>>':
-        value = this.eval(node.left) >>> this.eval(node.right);
-        break;
+        value = this.eval(node.left) >>> this.eval(node.right)
+        break
       case '<':
-        value = this.eval(node.left) < this.eval(node.right);
-        break;
+        value = this.eval(node.left) < this.eval(node.right)
+        break
       case '<=':
-        value = this.eval(node.left) <= this.eval(node.right);
-        break;
+        value = this.eval(node.left) <= this.eval(node.right)
+        break
       case '>':
-        value = this.eval(node.left) > this.eval(node.right);
-        break;
+        value = this.eval(node.left) > this.eval(node.right)
+        break
       case '>=':
-        value = this.eval(node.left) >= this.eval(node.right);
-        break;
+        value = this.eval(node.left) >= this.eval(node.right)
+        break
       case '==':
-        value = this.eval(node.left) == this.eval(node.right);
-        break;
+        value = this.eval(node.left) == this.eval(node.right)
+        break
       case '!=':
-        value = this.eval(node.left) != this.eval(node.right);
-        break;
+        value = this.eval(node.left) != this.eval(node.right)
+        break
       case '===':
-        value = this.eval(node.left) === this.eval(node.right);
+        value = this.eval(node.left) === this.eval(node.right)
         break
       case '!==':
-        value = this.eval(node.left) !== this.eval(node.right);
-        break;
+        value = this.eval(node.left) !== this.eval(node.right)
+        break
        case '&':
-        value = this.eval(node.left) & this.eval(node.right);
+        value = this.eval(node.left) & this.eval(node.right)
         break
       case '^':
-        value = this.eval(node.left) ^ this.eval(node.right);
-        break;
+        value = this.eval(node.left) ^ this.eval(node.right)
+        break
       case '|':
-        value = this.eval(node.left) | this.eval(node.right);
-        break;
+        value = this.eval(node.left) | this.eval(node.right)
+        break
       case '&&':
-        value = this.eval(node.left) && this.eval(node.right);
-        break;
+        value = this.eval(node.left) && this.eval(node.right)
+        break
       case '||':
-        value = this.eval(node.left) || this.eval(node.right);
-        break;
+        value = this.eval(node.left) || this.eval(node.right)
+        break
       default:
-        error(SyntaxError, `Operator ${node.operator} is not defined`, node.pos);
-        break;
+        error(SyntaxError, `Operator ${node.operator} is not defined`, node.pos)
+        break
      }
-     return value;
+     return value
   }
 
   conditionalExpression(node) {
@@ -289,9 +289,9 @@ class Compiler {
      * }
      */
     if (this.eval(node.test)) {
-      return this.eval(node.consequent);
+      return this.eval(node.consequent)
     } else {
-      return this.eval(node.alternate);
+      return this.eval(node.alternate)
     }
   }
 
@@ -303,9 +303,9 @@ class Compiler {
      *    pos: @posObject
      * }
      */
-    return node.value;
+    return node.value
   }
 
 }
 
-export default Compiler;
+export default Compiler

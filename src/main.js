@@ -9,4 +9,4 @@ function macroCC(str, flags = flag()) {
   return new Compiler(ast, flags).cc()
 }
 
-export { macroCC, flag, Parser, Compiler};
+export { macroCC, flag, Parser, Compiler}

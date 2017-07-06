@@ -22,11 +22,11 @@ function getErrorScript(pos) {
     let code = codes[lineIndex-1]
     let width = lineIndex.toString().length
     let lineIndexStr = (maxWidth - width) > 0 ? Array().join(' ') + lineIndex : '' + lineIndex
-    if(lineIndex == pos.lines) {
+    if (lineIndex == pos.lines) {
       str += chalk.red('> ') + chalk.gray(lineIndexStr+ ' | ') + `${code}\n`
       str += chalk.gray(Array(maxWidth + 3).join(' ') + ' | ') + Array(pos.cols).join(' ') + chalk.red('^\n')
     } else {
-      if(code != void 0) str += `  ${chalk.gray(lineIndexStr + ' |')} ${code}\n`
+      if (code != void 0) str += `  ${chalk.gray(lineIndexStr + ' |')} ${code}\n`
     }
   })
   return str

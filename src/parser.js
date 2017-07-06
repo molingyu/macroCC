@@ -24,6 +24,7 @@ class Parser {
     codes.forEach((line, index) => {
       start.lines = index + 1
       start.cols = 0
+      this.nodeIndex = 0
       this.reList()
       if (line.slice(0, 3) == '//#') {
         if (script != '') {
@@ -45,15 +46,16 @@ class Parser {
           start.cols += reg[0].length - 3
           line = line.slice(reg.index + reg[0].length, line.length)
         }
-        script += line + '\n';
+        script += line + '\n'
       }
     })
+    this.reList()
     if (this.node != ASTRoot) {
       let pos = this.getPos(start, 0)
       pos.cols = codes[codes.length - 1].length - 1
       error(SyntaxError, 'Unexpected endif of input', pos)
   }
-    return ASTRoot;
+    return ASTRoot
   }
 
 reList() {
@@ -73,13 +75,14 @@ getPos(posObject, index) {
 
 code(codeStr, start) {
   this.tokens = new Tokenizer(codeStr, start).run()
+  console.log(this.tokens)
   while (this.token() != void 0) {
-    switch (token.type) {
+    switch (this.token().type) {
       case 'value':
         return {
           type: 'value',
-          value: token.value,
-          pos: this.getPos(start, value.pos)
+          value: this.token().value,
+          pos: this.getPos(start, this.token().pos)
         }
       case 'keyword':
         return this.keyword(start)
@@ -136,12 +139,17 @@ identifier(start) {
 }
 
 expression(start) {
-  
+  return {
+    type: 'expression',
+    value: this.tokens.slice(this.nodeIndex, this.tokens.length),
+    pos: this.getPos(start, 0)
+  }
 }
 
 keyword(start) {
   let node = {}
   let posIndex = this.token().pos
+  console.log('keyword:', this.token().value)
   switch (this.token().value) {
     case 'define':
       this.next()
@@ -157,13 +165,13 @@ keyword(start) {
           this.next()
           node.value = this.expression(start)
           node.pos = this.getPos(start, posIndex)
+          return node
         } else {
           error(SyntaxError, `Unexpected token ${this.token().value}`, this.getPos(start, posIndex))
         }
       } else {
         error(SyntaxError, `Unexpected token ${this.token().value}`, this.getPos(start, posIndex))
       }
-      break
     case 'if':
       node.type = 'ifStatement'
       node.test = this.expression(start)
@@ -172,7 +180,7 @@ keyword(start) {
       node.isConsequent = true
       node.pos = this.getPos(start, posIndex)
       this.nodeStack.push(node)
-      break
+      return node
     case 'else':
       this.isOnly(start)
       if (this.node.type != 'ifStatement') {
@@ -189,7 +197,7 @@ keyword(start) {
       this.nodeStack.pop()
       break
     default:
-      error()
+      error(`Unexpected token ${this.token().value}`, this.getPos(start, posIndex))
   }
 }
 
