@@ -77,7 +77,6 @@ class Compiler {
     /**
      * {
      *    type: 'identifier',
-     *    global: Boolean,
      *    identifier: @globalIdentifier | @identifier,
      *    pos: @posObject
      * }
@@ -85,7 +84,6 @@ class Compiler {
     if (!this.scopes.allHas(node.identifier)) {
       error(ReferenceError, `Identifier ${node.identifier} is not defined`, node.pos);
     }
-    //error global?
     return this.scopes.get(node.identifier);
   }
 
