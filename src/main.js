@@ -2,9 +2,10 @@ import flag from './flag'
 import Parser from './parser'
 import Scopes from './scopes'
 import Compiler from './compiler'
-import error from './error'
+import {error, MacroCCError} from './error'
 
 function macroCC(str, flags = flag()) {
+  MacroCCError.script = str
   let ast = new Parser().parse(str)
   return new Compiler(ast, flags).cc()
 }

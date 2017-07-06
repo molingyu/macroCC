@@ -1,5 +1,6 @@
-var expect = require('chai').expect;
-var Parser = require('../lib/parser').default;
+var expect = require('chai').expect
+var Parser = require('../lib/parser').default
+var MacroCCError = require('../lib/error').MacroCCError
 
 var script = `//#define a = 233
 var a = /*# a #*/ / 2
@@ -8,7 +9,7 @@ console.log(100)
 //#else
 console.log(0)
 //#endif`
-$macroCCScript = script
+MacroCCError.script = script
 parser = new Parser()
 
 console.log(parser.parse(script, 'test.js').child)

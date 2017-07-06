@@ -1,4 +1,4 @@
-import error from './error'
+import {error} from './error'
 import Scopes from './scopes'
 
 class Compiler {
